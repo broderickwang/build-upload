@@ -34,7 +34,7 @@ public class EmployeeController {
 
     @GetMapping("/employees/addr")
     public List<Employee> getEmloyeesByAddr(){
-        return employeeRepository.findByTestValue("%chengda%");
+        return employeeRepository.findByEmailAddress("%chengda%");
     }
 
     @GetMapping("/employees/{id}")
