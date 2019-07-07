@@ -20,10 +20,10 @@ public class PlantUtil<T> {
     private static PlantUtil plantUtil;
 
     //国家平台测试地址
-//    private String url="http://182.148.48.165:8090/open.api";
+    private String url="http://182.148.48.165:8090/open.api";
 
     //国家平台正式地址
-    private String url = "http://jzgr.mohurd.gov.cn:81/open.api";
+//    private String url = "http://jzgr.mohurd.gov.cn:81/open.api";
 
     private String appId = "";
 

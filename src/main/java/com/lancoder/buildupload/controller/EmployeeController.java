@@ -2,6 +2,7 @@ package com.lancoder.buildupload.controller;
 
 import com.lancoder.buildupload.entity.Employee;
 import com.lancoder.buildupload.exception.ResourceNotFoundException;
+import com.lancoder.buildupload.recordUpload.RecordUpload;
 import com.lancoder.buildupload.repository.EmployeeRepository;
 import com.lancoder.buildupload.repository.RecordRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,8 @@ public class EmployeeController {
 
     @Autowired
     private RecordRepository recordRepository;
+
+    RecordUpload recordUpload;
 
     @GetMapping("/employees")
     public List<Employee> getAllEmployees() {
@@ -80,7 +83,8 @@ public class EmployeeController {
     }
 
     @GetMapping("/test")
-    public List<RecordRepository.WorkerAttendanceDTO> test(){
+    public String test(){
+
         /*List<Object> objects = recordRepository.getAllRecord(5);
 
         List<WorkerAttendanceDTO> rst = new ArrayList<>();
@@ -96,6 +100,8 @@ public class EmployeeController {
         });
 
         return rst;*/
-        return recordRepository.findAllWorkers(5);
+        recordUpload = new RecordUpload();
+        recordUpload.getToken();
+        return"test";
     }
 }

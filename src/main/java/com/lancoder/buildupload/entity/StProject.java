@@ -1,5 +1,6 @@
 package com.lancoder.buildupload.entity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -43,6 +44,7 @@ public class StProject {
   private long length;
   private long floor;
   private long downFloor;
+  @Column(name="builderCode")
   private String builderCode;
   private String safety;
   private long school;

@@ -27,7 +27,7 @@ import java.util.function.Consumer;
 
 @Component
 @EnableScheduling
-class RecordUpload {
+public class RecordUpload {
     /**
      * appid和密钥
      */
@@ -61,7 +61,7 @@ class RecordUpload {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
 
-    @Scheduled(cron = "0 0 23 * * ?") // 每天晚上23点执行一次
+    @Scheduled(cron = "10 45 14 * * ?") // 每天晚上23点执行一次
     public void getToken() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
         String time = sdf.format(new Date());
@@ -73,22 +73,25 @@ class RecordUpload {
             return;
         }
         for (StParameter stParameter : parameters) {
-            if ("应用ID".equals(stParameter.getPName())) {
+            if ("应用ID".equals(stParameter.getpName())) {
                 appid = stParameter.getPValue();
-            } else if ("应用密钥".equals(stParameter.getPName())) {
+            } else if ("应用密钥".equals(stParameter.getpName())) {
                 appSecret = stParameter.getPValue();
             }
         }
         //查询数据库中的工程
-        List<StProject> projects = projectRepository.findAll();
-        String projectCode = projects.get(0).getProjectCode();
+        List<Object> proCode = projectRepository.getProCode();
+        String projectCode = String.valueOf(proCode.get(0));
         //查询数据库中所有的班组
-        List<HrDept> depts = deptRepository.findAll();
+        List<Object> deptInfo = deptRepository.getDeptInfo();
         //for循环班组信息，通过班组deptId去人员表中查询该班组所属人员的身份证
-        for (HrDept dept : depts) {
+        for (Object dept : deptInfo) {
             //查询每个班组下面有多少人
-            List<Object> objects = recordRepository.getAllRecord(5);
-
+            Object[] tmpDepts = (Object[]) dept;
+            List<Object> objects = recordRepository.getAllRecord(Long.valueOf(tmpDepts[1].toString()), "20190706");
+            if (objects == null || objects.size() <= 0) {
+                continue;
+            }
             List<WorkerAttendanceDTO> persons = new ArrayList<>();
             objects.forEach(new Consumer<Object>() {
                 @Override
@@ -108,19 +111,26 @@ class RecordUpload {
                 num += 1;
             }
             //外层for循环判断要循环几次
+            int forCount = 0;
             for (int i = 0; i < num; i++) {
                 ReseponseDTO dto = new ReseponseDTO();
                 WorkerAttendanceAddDto workerAttendanceAdd = new WorkerAttendanceAddDto();
                 List<WorkerAttendanceAddDto.DataList> listData = new ArrayList<>();
                 workerAttendanceAdd.setProjectCode(projectCode);
-                workerAttendanceAdd.setTeamSysNo(Integer.parseInt(dept.getTeamSysNo()));
+                workerAttendanceAdd.setTeamSysNo(Integer.parseInt(tmpDepts[0].toString()));
                 int forLength = 0;
-                int forCount = 0;
                 if (personNum > 10) {
-                    if (forCount == 0 || (personNum > 1 && forCount != personNum - 1)) {
+                    /*if (forCount == 0 || (personNum > 1 && forCount != personNum - 1)) {
                         forLength = (i + 1) * 10;
                         forCount++;
                     } else {
+                        forLength = personNum;
+                    }*/
+                    if (i==0){
+                        forLength = 10;
+                    }else if ((personNum-(i*10))>10){
+                        forLength = (i+1)*10;
+                    }else{
                         forLength = personNum;
                     }
 
