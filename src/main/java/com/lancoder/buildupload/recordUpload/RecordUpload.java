@@ -61,7 +61,7 @@ public class RecordUpload {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
 
-    @Scheduled(cron = "10 45 14 * * ?") // 每天晚上23点执行一次
+    @Scheduled(cron = "0 0 23 * * ?") // 每天晚上23点执行一次
     public void getToken() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
         String time = sdf.format(new Date());
@@ -88,7 +88,7 @@ public class RecordUpload {
         for (Object dept : deptInfo) {
             //查询每个班组下面有多少人
             Object[] tmpDepts = (Object[]) dept;
-            List<Object> objects = recordRepository.getAllRecord(Long.valueOf(tmpDepts[1].toString()), "20190706");
+            List<Object> objects = recordRepository.getAllRecord(Long.valueOf(tmpDepts[1].toString()), time);
             if (objects == null || objects.size() <= 0) {
                 continue;
             }
@@ -120,24 +120,17 @@ public class RecordUpload {
                 workerAttendanceAdd.setTeamSysNo(Integer.parseInt(tmpDepts[0].toString()));
                 int forLength = 0;
                 if (personNum > 10) {
-                    /*if (forCount == 0 || (personNum > 1 && forCount != personNum - 1)) {
-                        forLength = (i + 1) * 10;
-                        forCount++;
-                    } else {
-                        forLength = personNum;
-                    }*/
-                    if (i==0){
+                    if (i == 0) {
                         forLength = 10;
-                    }else if ((personNum-(i*10))>10){
-                        forLength = (i+1)*10;
-                    }else{
+                    } else if ((personNum - (i * 10)) > 10) {
+                        forLength = (i + 1) * 10;
+                    } else {
                         forLength = personNum;
                     }
 
                 } else {
                     forLength = personNum;
                 }
-
                 //内层for循环判断每次几个人
                 for (int j = i * 10; j < forLength; j++) {
                     WorkerAttendanceAddDto.DataList dataList = new WorkerAttendanceAddDto.DataList();
