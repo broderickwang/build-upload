@@ -1,6 +1,5 @@
 package com.lancoder.buildupload.controller;
 
-import com.lancoder.buildupload.dto.WorkerAttendanceDTO;
 import com.lancoder.buildupload.entity.Employee;
 import com.lancoder.buildupload.exception.ResourceNotFoundException;
 import com.lancoder.buildupload.repository.EmployeeRepository;
@@ -10,11 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 
 /**
  * @project: build-upload
@@ -83,8 +80,8 @@ public class EmployeeController {
     }
 
     @GetMapping("/test")
-    public List<WorkerAttendanceDTO> test(){
-        List<Object> objects = recordRepository.getAllRecord(5);
+    public List<RecordRepository.WorkerAttendanceDTO> test(){
+        /*List<Object> objects = recordRepository.getAllRecord(5);
 
         List<WorkerAttendanceDTO> rst = new ArrayList<>();
         objects.forEach(new Consumer<Object>() {
@@ -98,6 +95,7 @@ public class EmployeeController {
             }
         });
 
-        return rst;
+        return rst;*/
+        return recordRepository.findAllWorkers(5);
     }
 }
