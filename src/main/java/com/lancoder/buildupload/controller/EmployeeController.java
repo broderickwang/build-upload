@@ -1,16 +1,20 @@
 package com.lancoder.buildupload.controller;
 
+import com.lancoder.buildupload.dto.WorkerAttendanceDTO;
 import com.lancoder.buildupload.entity.Employee;
 import com.lancoder.buildupload.exception.ResourceNotFoundException;
 import com.lancoder.buildupload.repository.EmployeeRepository;
+import com.lancoder.buildupload.repository.RecordRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 /**
  * @project: build-upload
@@ -26,6 +30,9 @@ import java.util.Map;
 public class EmployeeController {
     @Autowired
     private EmployeeRepository employeeRepository;
+
+    @Autowired
+    private RecordRepository recordRepository;
 
     @GetMapping("/employees")
     public List<Employee> getAllEmployees() {
@@ -73,5 +80,24 @@ public class EmployeeController {
         Map<String, Boolean> response = new HashMap<>();
         response.put("deleted", Boolean.TRUE);
         return response;
+    }
+
+    @GetMapping("/test")
+    public List<WorkerAttendanceDTO> test(){
+        List<Object> objects = recordRepository.getAllRecord(5);
+
+        List<WorkerAttendanceDTO> rst = new ArrayList<>();
+        objects.forEach(new Consumer<Object>() {
+            @Override
+            public void accept(Object o) {
+                Object[] os = (Object[]) o;
+
+                WorkerAttendanceDTO dto = new WorkerAttendanceDTO(String.valueOf(os[0]),String.valueOf(os[1])
+                        ,String.valueOf(os[2]),String.valueOf(os[3]));
+                rst.add(dto);
+            }
+        });
+
+        return rst;
     }
 }

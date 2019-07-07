@@ -4,20 +4,39 @@ package com.lancoder.buildupload.dto;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-
+/**
+ * 国家平台对接实体类
+ */
 public class WorkerAttendanceDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private String image;
-	private String idCardType;
+	/**
+	 * 证件类型
+	 */
+	private String idCardType = "01";
+	/**
+	 * 身份证号
+	 */
 	private String idCardNumber;
+	/**
+	 * 考勤时间
+	 */
 	private String date;
-	private String time;
+	/**
+	 * 进出场方向
+	 */
 	private String direction;
+
+	/**
+	 * 通道名称
+	 */
 	private String channel;
+	/**
+	 * 通行类型
+	 */
 	private String attendType;
-	private BigDecimal lng;
-	private BigDecimal lat;
+
 	public void setImage(String image) {
 		this.image = image;
 	}
@@ -47,14 +66,6 @@ public class WorkerAttendanceDTO implements Serializable {
 		this.date = date;
 	}
 
-	public String getTime() {
-		return time;
-	}
-
-	public void setTime(String time) {
-		this.time = time;
-	}
-
 	public void setDirection(String direction) {
 		this.direction = direction;
 	}
@@ -76,17 +87,10 @@ public class WorkerAttendanceDTO implements Serializable {
 		return attendType;
 	}
 
-	public void setLng(BigDecimal lng) {
-		this.lng = lng;
-	}
-	public BigDecimal getLng() {
-		return lng;
-	}
-
-	public void setLat(BigDecimal lat) {
-		this.lat = lat;
-	}
-	public BigDecimal getLat() {
-		return lat;
+	public WorkerAttendanceDTO(String idCardNumber, String date,String direction, String channel) {
+		this.idCardNumber = idCardNumber;
+		this.date = date;
+		this.direction = direction;
+		this.channel = channel;
 	}
 }
