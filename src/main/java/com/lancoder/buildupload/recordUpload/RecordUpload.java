@@ -28,6 +28,12 @@ import java.util.function.Consumer;
 @Component
 @EnableScheduling
 public class RecordUpload {
+
+    /**
+     *
+     */
+    private static final Logger LOGGER = LoggerFactory.getLogger(RecordUpload.class);
+
     /**
      * appid和密钥
      */
@@ -161,4 +167,10 @@ public class RecordUpload {
 
         }
     }
+
+
+//    @Scheduled(cron = "* * * * * ?")
+//    public void test(){
+//        LOGGER.info("当前时间是：{}",new Date());
+//    }
 }
