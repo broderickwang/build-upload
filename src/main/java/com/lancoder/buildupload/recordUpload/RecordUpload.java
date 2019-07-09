@@ -11,13 +11,12 @@ import com.lancoder.buildupload.entity.StProject;
 import com.lancoder.buildupload.repository.*;
 import com.lancoder.buildupload.util.AesUtils;
 import com.lancoder.buildupload.util.PlantUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -32,7 +31,7 @@ public class RecordUpload {
     /**
      *
      */
-    private static final Logger LOGGER = LoggerFactory.getLogger(RecordUpload.class);
+    private final Logger logger = LogManager.getLogger(this.getClass());
 
     /**
      * appid和密钥
@@ -63,8 +62,6 @@ public class RecordUpload {
      */
     @Autowired
     private RecordRepository recordRepository;
-
-    private final Logger logger = LoggerFactory.getLogger(getClass());
 
 
     @Scheduled(cron = "0 0 23 * * ?") // 每天晚上23点执行一次
@@ -171,6 +168,8 @@ public class RecordUpload {
 
 //    @Scheduled(cron = "* * * * * ?")
 //    public void test(){
-//        LOGGER.info("当前时间是：{}",new Date());
+//        logger.info("当前时间是：{}",new Date());
+//        logger.error("当前时间是：{}",new Date());
+//        logger.warn("当前时间是：{}",new Date());
 //    }
 }
