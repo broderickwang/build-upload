@@ -6,6 +6,7 @@ import com.lancoder.buildupload.dto.ReseponseDTO;
 import com.lancoder.buildupload.dto.WorkerAttendanceAddDto;
 import com.lancoder.buildupload.dto.WorkerAttendanceDTO;
 import com.lancoder.buildupload.entity.HrDept;
+import com.lancoder.buildupload.entity.HrEmployee;
 import com.lancoder.buildupload.entity.StParameter;
 import com.lancoder.buildupload.entity.StProject;
 import com.lancoder.buildupload.repository.*;
@@ -64,7 +65,7 @@ public class RecordUpload {
     private RecordRepository recordRepository;
 
 
-    @Scheduled(cron = "0 0 23 * * ?") // 每天晚上23点执行一次
+    @Scheduled(cron = "50 30 8 * * ?") // 每天晚上23点执行一次
     public void getToken() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
         String time = sdf.format(new Date());
@@ -83,15 +84,15 @@ public class RecordUpload {
             }
         }
         //查询数据库中的工程
-        List<Object> proCode = projectRepository.getProCode();
-        String projectCode = String.valueOf(proCode.get(0));
+//        List<Object> proCode = projectRepository.getProCode();
+        String projectCode = String.valueOf(appid);
         //查询数据库中所有的班组
         List<Object> deptInfo = deptRepository.getDeptInfo();
         //for循环班组信息，通过班组deptId去人员表中查询该班组所属人员的身份证
         for (Object dept : deptInfo) {
             //查询每个班组下面有多少人
             Object[] tmpDepts = (Object[]) dept;
-            List<Object> objects = recordRepository.getAllRecord(Long.valueOf(tmpDepts[1].toString()), time);
+            List<Object> objects = recordRepository.getAllRecord(Long.valueOf(tmpDepts[1].toString()), "20190709");
             if (objects == null || objects.size() <= 0) {
                 continue;
             }
@@ -148,16 +149,23 @@ public class RecordUpload {
                 String rst = plantUtil.method("WorkerAttendance.Add").appId(appid).appsecret(appSecret).data(workerAttendanceAdd).excute();
                 Gson gson = new Gson();
                 dto = gson.fromJson(rst, ReseponseDTO.class);
+                logger.info("当前时间是：{}",new Date());
+                logger.info("国家平台上传返回值：{}",dto.toString());
                 if (dto.getCode() == 0) {
                     ReseponseDTO.Data data1 = dto.getData();
                     //条用异步查询方法
                     PlantResultDTO.Data Ajaxresult = plantUtil.AjaxRequest(data1, appid);
                     //判断异步请求的返回状态
-                    if (Ajaxresult.getStatus() == 20) {
-                        System.out.println(dto);
+                    if (Ajaxresult.getStatus() == 20 || Ajaxresult.getStatus() == 0) {
+                        // 如果成功的话就更新人员考勤数据为已上传
+                        for (WorkerAttendanceDTO person:persons){
+                            recordRepository.updateResult(person.getIdCardNumber(),person.getDate());
+                        }
+                        logger.info("当前时间是：{}",new Date());
+                        logger.info("成功的国家平台异步请求返回值：{}",Ajaxresult.toString());
                     } else {
-                        String result1 = Ajaxresult.getResult();
-                        dto.setMessage(result1);
+                        logger.info("当前时间是：{}",new Date());
+                        logger.info("失败的国家平台异步请求返回值：{}",Ajaxresult.toString());
                     }
                 }
             }

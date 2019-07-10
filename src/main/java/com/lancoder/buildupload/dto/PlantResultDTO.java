@@ -56,6 +56,22 @@ public class PlantResultDTO {
             return status;
         }
 
+        @Override
+        public String toString() {
+            return "Data{" +
+                    "requestSerialCode='" + requestSerialCode + '\'' +
+                    ", result='" + result + '\'' +
+                    ", status=" + status +
+                    '}';
+        }
     }
 
+    @Override
+    public String toString() {
+        return "PlantResultDTO{" +
+                "data=" + data +
+                ", code=" + code +
+                ", message='" + message + '\'' +
+                '}';
+    }
 }
